@@ -1,0 +1,110 @@
+import yfinance as yf
+import matplotlib.pyplot as plt
+import pandas as pd
+import tkinter as tk
+from tkinter import messagebox, simpledialog, ttk
+from datetime import datetime, timedelta
+
+# Funzione per analizzare dati finanziari
+def analizza_dati_finanziari(ticker):
+    try:
+        dati = yf.download(ticker, start='2020-01-01', end='2024-01-01')
+        if dati.empty:
+            messagebox.showerror("Errore", "Nessun dato trovato per il ticker fornito.")
+            return
+        
+        # Calcolo della media mobile a 20 giorni
+        dati['MA20'] = dati['Adj Close'].rolling(window=20).mean()
+        
+        # Creazione di una finestra per le statistiche
+        finestra_statistiche = tk.Toplevel()
+        finestra_statistiche.title(f"Statistiche per {ticker}")
+        statistiche = dati.describe()
+
+        # Visualizzazione delle statistiche in una Treeview
+        tree = ttk.Treeview(finestra_statistiche, columns=statistiche.columns.tolist(), show='headings')
+        for col in statistiche.columns:
+            tree.heading(col, text=col)
+            tree.column(col, anchor="center")
+
+        for _, row in statistiche.iterrows():
+            tree.insert("", "end", values=row.tolist())
+
+        tree.pack(expand=True, fill='both')
+
+        # Creazione dei grafici
+        plt.figure(figsize=(14, 7))
+        plt.plot(dati['Adj Close'], label='Prezzo Azione', color='blue')
+        plt.plot(dati['MA20'], label='Media Mobile 20 Giorni', color='orange')
+        plt.title(f'Andamento Prezzo Azione {ticker}')
+        plt.xlabel('Data')
+        plt.ylabel('Prezzo')
+        plt.legend()
+        plt.grid()
+        plt.show()
+        
+    except Exception as e:
+        messagebox.showerror("Errore", f"Errore durante l'analisi dei dati: {e}")
+
+# Funzione per simulare investimenti
+def simula_investimento(ticker, importo_iniziale, anni):
+    try:
+        # Data di partenza: oggi
+        data_inizio = datetime.now() - timedelta(days=365*anni)
+        data_fine = datetime.now()
+
+        dati = yf.download(ticker, start=data_inizio.strftime('%Y-%m-%d'), end=data_fine.strftime('%Y-%m-%d'))
+
+        if dati.empty:
+            messagebox.showerror("Errore", "Nessun dato trovato per il ticker fornito.")
+            return
+        
+        # Calcolo del rendimento cumulativo per il periodo selezionato
+        dati['Cumulative Return'] = (1 + dati['Adj Close'].pct_change()).cumprod()
+        
+        # Calcolo del valore finale in base all'importo iniziale
+        valore_finale = dati['Cumulative Return'].iloc[-1] * importo_iniziale
+
+        messagebox.showinfo("Risultato Simulazione",
+                            f"Valore finale dell'investimento in {ticker} dopo {anni} anni: €{valore_finale:.2f}")
+
+    except Exception as e:
+        messagebox.showerror("Errore", f"Errore durante la simulazione dell'investimento: {e}")
+
+# Funzione principale per il menu
+def main():
+    finestra = tk.Tk()
+    finestra.title("Analizzatore e Simulatore Dati Finanziari")
+    finestra.geometry("400x300")  # Dimensioni della finestra
+
+    # Funzione per analizzare i dati
+    def on_analizza_dati():
+        ticker = simpledialog.askstring("Input", "Inserisci il ticker dell'azione (es. AAPL, TSLA):")
+        if ticker:
+            analizza_dati_finanziari(ticker)
+
+    # Funzione per simulare investimenti
+    def on_simula_investimento():
+        ticker = simpledialog.askstring("Input", "Inserisci il ticker dell'azione (es. AAPL, TSLA):")
+        if ticker:
+            importo = simpledialog.askfloat("Input", "Inserisci l'importo iniziale dell'investimento:")
+            anni = simpledialog.askinteger("Input", "Inserisci il numero di anni per l'investimento:")
+            if importo and anni:
+                simula_investimento(ticker, importo, anni)
+
+    # Pulsante per analizzare i dati
+    btn_analizza = tk.Button(finestra, text="Analizza Dati Finanziari", command=on_analizza_dati, width=30, height=2)
+    btn_analizza.pack(pady=10)
+
+    # Pulsante per simulare investimenti
+    btn_simula = tk.Button(finestra, text="Simula Investimento", command=on_simula_investimento, width=30, height=2)
+    btn_simula.pack(pady=10)
+
+    # Pulsante per uscire
+    btn_esci = tk.Button(finestra, text="Esci", command=finestra.quit, width=30, height=2)
+    btn_esci.pack(pady=10)
+
+    finestra.mainloop()
+
+if __name__ == "__main__":
+    main()
