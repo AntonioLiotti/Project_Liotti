@@ -1,46 +1,62 @@
-# Funzione per validare la data
-def valida_data(data):
-    try:
-        giorno, mese, anno = map(int, data.split('/'))
-        assert 1 <= giorno <= 31 and 1 <= mese <= 12 and len(str(anno)) == 4
-        return True
-    except (ValueError, AssertionError):
-        return False
+import tkinter as tk
+from tkinter import messagebox
 
-# Funzione principale
-def crea_fattura():
-    # Input dati fattura
-    numero_fatture = input("Inserisci il numero della fattura:")
+def crea_fattura_gui():
+    def salva_fattura():
+        numero_fattura = numero_entry.get()
+        data_emissione = data_entry.get()
+        nome_cliente = cliente_entry.get()
+        try:
+            totale_fattura = float(importo_entry.get())
+        except ValueError:
+            messagebox.showerror("Errore", "Importo non valido!")
+            return
 
-    data_emissione = input("Inserisci data della fattura (formato GG/MM/AAAA):")
-    while not valida_data(data_emissione):
-        print("Data non valida, riprova.")
-        data_emissione = input("Inserisci data della fattura (formato GG/MM/AAAA):")
+        # Calcolo IVA e totale
+        iva = totale_fattura * 0.22
+        totale_fattura_iva = totale_fattura + iva
 
-    nome_cliente = input("Inserisci il nome del cliente:")
+        # Salvataggio su file
+        with open("fatture.txt", "a") as fileFatture:
+            fileFatture.write(f"Numero Fattura: {numero_fattura}\n")
+            fileFatture.write(f"Data Emissione: {data_emissione}\n")
+            fileFatture.write(f"Nome Cliente: {nome_cliente}\n")
+            fileFatture.write(f"Totale Fattura (senza IVA): {totale_fattura:.2f} €\n")
+            fileFatture.write(f"IVA (22%): {iva:.2f} €\n")
+            fileFatture.write(f"Totale Fattura (con IVA): {totale_fattura_iva:.2f} €\n")
+            fileFatture.write("-" * 40 + "\n")
 
-    # Validazione dell'importo fattura
-    try:
-        totale_fattura = float(input("Inserisci importo della fattura senza IVA:"))
-    except ValueError:
-        print("Importo non valido. Inserisci un numero.")
-        return
+        messagebox.showinfo("Successo", "Fattura salvata con successo!")
+        numero_entry.delete(0, tk.END)
+        data_entry.delete(0, tk.END)
+        cliente_entry.delete(0, tk.END)
+        importo_entry.delete(0, tk.END)
 
-    # Calcolo IVA e totale
-    iva = totale_fattura * 0.22
-    totale_fattura_iva = totale_fattura + iva
+    # Creazione finestra GUI
+    root = tk.Tk()
+    root.title("Gestione Fatture")
 
-    # Salva i dati della fattura in modo ordinato
-    with open("fatture.txt", "a") as fileFatture:
-        fileFatture.write(f"Numero Fattura: {numero_fatture}\n")
-        fileFatture.write(f"Data Emissione: {data_emissione}\n")
-        fileFatture.write(f"Nome Cliente: {nome_cliente}\n")
-        fileFatture.write(f"Totale Fattura (senza IVA): {totale_fattura:.2f} €\n")
-        fileFatture.write(f"IVA (22%): {iva:.2f} €\n")
-        fileFatture.write(f"Totale Fattura (con IVA): {totale_fattura_iva:.2f} €\n")
-        fileFatture.write("-" * 40 + "\n")  # Linea separatrice per ogni fattura
+    # Campi di input
+    tk.Label(root, text="Numero Fattura:").grid(row=0, column=0)
+    numero_entry = tk.Entry(root)
+    numero_entry.grid(row=0, column=1)
 
-    print("Fattura salvata con successo!")
+    tk.Label(root, text="Data Emissione (GG/MM/AAAA):").grid(row=1, column=0)
+    data_entry = tk.Entry(root)
+    data_entry.grid(row=1, column=1)
 
-# Chiamata alla funzione
-crea_fattura()
+    tk.Label(root, text="Nome Cliente:").grid(row=2, column=0)
+    cliente_entry = tk.Entry(root)
+    cliente_entry.grid(row=2, column=1)
+
+    tk.Label(root, text="Importo Fattura (senza IVA):").grid(row=3, column=0)
+    importo_entry = tk.Entry(root)
+    importo_entry.grid(row=3, column=1)
+
+    # Pulsante per salvare la fattura
+    salva_button = tk.Button(root, text="Salva Fattura", command=salva_fattura)
+    salva_button.grid(row=4, column=0, columnspan=2)
+
+    root.mainloop()
+
+crea_fattura_gui()
