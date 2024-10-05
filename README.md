@@ -5,7 +5,7 @@ Benvenuto nel mio repository! 🎉
 Questo spazio raccoglie i miei progetti personali, creati con l'obiettivo di imparare a programmare e migliorare le mie competenze nel mondo della tecnologia. Amo esplorare diversi linguaggi di programmazione e strumenti, e attraverso questi progetti condivido il mio percorso di apprendimento.
 
 ## 🖥️ Chi sono
-Sono un appassionato di tecnologia e programmazione. Mi piace sperimentare, creare script e applicazioni per comprendere meglio il mondo del coding e come posso applicare queste competenze nella vita reale. Questo repository rappresenta un diario dei miei progressi e delle cose che sto imparando.
+Ciao! Sono Antonio tra le mie passioni quella per la tecnologia e la programmazione ricoprono un ruolo fondamentale. Mi piace sperimentare, creare script e applicazioni per comprendere meglio il mondo del coding e come posso applicare queste competenze nella vita reale ed applicarle anche a quello che è il mio campo di studio... ovvero quello Economico/Finanzairio. Questo repository rappresenta un diario dei miei progressi e delle cose che sto imparando.
 
 ## 📚 Progetti inclusi
 
@@ -33,4 +33,4 @@ Se vuoi entrare in contatto, confrontarti sui progetti o darmi feedback, sentiti
 
 ---
 
-Grazie per aver visitato il mio repository e per il supporto al mio viaggio di apprendimento! 🚀👨‍💻
+Grazie per aver visitato il mio repository e per il supporto nel mio viaggio nel mondo del coding! 🚀👨‍💻
