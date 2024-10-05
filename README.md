@@ -14,8 +14,10 @@ Ecco alcuni dei progetti che puoi trovare in questo repository:
 1. **Gestione Fatture**
    - Un semplice script Python per creare e salvare fatture con calcolo dell'IVA, salvando i dati in un file di testo.
    - Scopo: Imparare le basi dell'interazione con file e gestione di input/output in Python.
-
-2. **Altri Progetti**
+2. **Simulatore Investimenti**
+   Questo progetto è un simulatore di investimenti finanziari sviluppato in Python. Utilizza i dati storici reali delle azioni forniti da Yahoo Finance tramite 
+   l'API yfinance e consente agli utenti di analizzare i dati di mercato e simulare potenziali guadagni basati su investimenti a lungo termine.
+3. **Altri Progetti**
    - In arrivo... (aggiornerò man mano che imparo nuovi concetti e creo nuovi progetti).
 
 ## 🚀 Obiettivi
