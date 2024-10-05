@@ -17,7 +17,27 @@ Ecco alcuni dei progetti che puoi trovare in questo repository:
 2. **Simulatore Investimenti**
    Questo progetto è un simulatore di investimenti finanziari sviluppato in Python. Utilizza i dati storici reali delle azioni forniti da Yahoo Finance tramite 
    l'API yfinance e consente agli utenti di analizzare i dati di mercato e simulare potenziali guadagni basati su investimenti a lungo termine.
-3. **Altri Progetti**
+Il programma attuale simula i rendimenti futuri degli investimenti utilizzando dati storici del prezzo delle azioni (o di un altro asset) forniti tramite l'API di Yahoo Finance (con la libreria yfinance). I valori futuri non vengono calcolati tramite previsioni o algoritmi di intelligenza artificiale, ma piuttosto simulando un investimento passato e osservando come si sarebbe evoluto.
+
+Ecco come funziona il calcolo:
+**Dati Storici:**
+Lo script utilizza yfinance per scaricare i dati storici di chiusura aggiustati di un titolo (ad esempio, prezzo delle azioni giornaliero) da Yahoo Finance.
+Questi dati storici rappresentano come il prezzo dell'azione si è mosso in passato.
+**Rendimento Cumulativo:**
+Viene calcolato il rendimento percentuale giornaliero dell'asset, ovvero quanto il prezzo è cambiato rispetto al giorno precedente.
+Viene poi calcolato il rendimento cumulativo a partire da un certo periodo (nel codice, viene preso un periodo predefinito, come dal 2010 fino a oggi).
+La formula usata è:
+
+Rendimento cumulativo=(1+variazione percentuale giornaliera).cumprod()
+
+Questo significa che i rendimenti giornalieri vengono moltiplicati l'uno per l'altro, simulando la crescita dell'investimento nel tempo.
+**Valore Finale dell'Investimento:**
+Una volta ottenuto il rendimento cumulativo alla fine del periodo considerato, si moltiplica questo valore per l'importo dell'investimento iniziale inserito dall'utente. Questo fornisce il valore finale simulato dell'investimento.
+
+
+
+   
+4. **Altri Progetti**
    - In arrivo... (aggiornerò man mano che imparo nuovi concetti e creo nuovi progetti).
 
 ## 🚀 Obiettivi
