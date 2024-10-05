@@ -1,22 +1,59 @@
-import tkinter as tk
-from tkinter import messagebox
+import tkinter as tk  # Importa la libreria tkinter per creare interfacce grafiche
+from tkinter import messagebox  # Importa il modulo messagebox per mostrare messaggi di errore o successo
+import datetime  # Importa la libreria datetime per la gestione delle date
+
+def valida_data(data):
+    """
+    Funzione per validare il formato e la correttezza della data.
+    
+    Args:
+        data (str): Data in formato GG/MM/AAAA.
+        
+    Returns:
+        bool: True se la data è valida, False altrimenti.
+    """
+    try:
+        # Divide la stringa della data nei componenti giorno, mese e anno
+        giorno, mese, anno = map(int, data.split('/'))
+        # Prova a creare un oggetto data per verificare la validità
+        datetime.datetime(anno, mese, giorno)  
+        return True
+    except ValueError:
+        return False
 
 def crea_fattura_gui():
+    """
+    Funzione principale per creare l'interfaccia grafica per la gestione delle fatture.
+    """
+    
     def salva_fattura():
-        numero_fattura = numero_entry.get()
-        data_emissione = data_entry.get()
-        nome_cliente = cliente_entry.get()
-        try:
-            totale_fattura = float(importo_entry.get())
-        except ValueError:
-            messagebox.showerror("Errore", "Importo non valido!")
+        """
+        Funzione per salvare i dati della fattura in un file di testo.
+        Valida i dati inseriti dall'utente e calcola l'IVA.
+        """
+        numero_fattura = numero_entry.get()  # Ottieni il numero della fattura dall'input
+        data_emissione = data_entry.get()  # Ottieni la data di emissione dall'input
+        nome_cliente = cliente_entry.get()  # Ottieni il nome del cliente dall'input
+        
+        # Validazione della data
+        if not valida_data(data_emissione):
+            messagebox.showerror("Errore", "Data non valida! Formato richiesto: GG/MM/AAAA")
             return
 
-        # Calcolo IVA e totale
+        try:
+            totale_fattura = float(importo_entry.get())  # Ottieni l'importo della fattura dall'input
+            if totale_fattura <= 0:  # Controlla se l'importo è maggiore di zero
+                raise ValueError("L'importo deve essere maggiore di zero.")
+        except ValueError as e:
+            # Mostra un messaggio di errore se l'importo non è valido
+            messagebox.showerror("Errore", str(e) if str(e) else "Importo non valido!")
+            return
+
+        # Calcolo dell'IVA e del totale della fattura
         iva = totale_fattura * 0.22
         totale_fattura_iva = totale_fattura + iva
 
-        # Salvataggio su file
+        # Salvataggio dei dati della fattura in un file di testo
         with open("fatture.txt", "a") as fileFatture:
             fileFatture.write(f"Numero Fattura: {numero_fattura}\n")
             fileFatture.write(f"Data Emissione: {data_emissione}\n")
@@ -24,39 +61,48 @@ def crea_fattura_gui():
             fileFatture.write(f"Totale Fattura (senza IVA): {totale_fattura:.2f} €\n")
             fileFatture.write(f"IVA (22%): {iva:.2f} €\n")
             fileFatture.write(f"Totale Fattura (con IVA): {totale_fattura_iva:.2f} €\n")
-            fileFatture.write("-" * 40 + "\n")
+            fileFatture.write("-" * 40 + "\n")  # Aggiungi una linea di separazione
 
+        # Mostra un messaggio di successo
         messagebox.showinfo("Successo", "Fattura salvata con successo!")
+        
+        # Pulisci i campi di input dopo il salvataggio
         numero_entry.delete(0, tk.END)
         data_entry.delete(0, tk.END)
         cliente_entry.delete(0, tk.END)
         importo_entry.delete(0, tk.END)
 
-    # Creazione finestra GUI
+    # Creazione della finestra principale dell'interfaccia grafica
     root = tk.Tk()
-    root.title("Gestione Fatture")
-
-    # Campi di input
-    tk.Label(root, text="Numero Fattura:").grid(row=0, column=0)
-    numero_entry = tk.Entry(root)
+    root.title("Gestione Fatture")  # Imposta il titolo della finestra
+    
+    # Impostazione del padding per i widget
+    for i in range(5):
+        root.grid_rowconfigure(i, pad=5)  # Aggiungi padding verticale tra le righe
+    
+    # Creazione dei campi di input per la fattura
+    tk.Label(root, text="Numero Fattura:").grid(row=0, column=0, sticky=tk.W)
+    numero_entry = tk.Entry(root)  # Campo di input per il numero della fattura
     numero_entry.grid(row=0, column=1)
 
-    tk.Label(root, text="Data Emissione (GG/MM/AAAA):").grid(row=1, column=0)
-    data_entry = tk.Entry(root)
+    tk.Label(root, text="Data Emissione (GG/MM/AAAA):").grid(row=1, column=0, sticky=tk.W)
+    data_entry = tk.Entry(root)  # Campo di input per la data di emissione
     data_entry.grid(row=1, column=1)
 
-    tk.Label(root, text="Nome Cliente:").grid(row=2, column=0)
-    cliente_entry = tk.Entry(root)
+    tk.Label(root, text="Nome Cliente:").grid(row=2, column=0, sticky=tk.W)
+    cliente_entry = tk.Entry(root)  # Campo di input per il nome del cliente
     cliente_entry.grid(row=2, column=1)
 
-    tk.Label(root, text="Importo Fattura (senza IVA):").grid(row=3, column=0)
-    importo_entry = tk.Entry(root)
+    tk.Label(root, text="Importo Fattura (senza IVA):").grid(row=3, column=0, sticky=tk.W)
+    importo_entry = tk.Entry(root)  # Campo di input per l'importo della fattura
     importo_entry.grid(row=3, column=1)
 
     # Pulsante per salvare la fattura
     salva_button = tk.Button(root, text="Salva Fattura", command=salva_fattura)
-    salva_button.grid(row=4, column=0, columnspan=2)
+    salva_button.grid(row=4, column=0, columnspan=2)  # Pulsante si estende su entrambe le colonne
 
+    # Avvio del ciclo principale dell'interfaccia grafica
     root.mainloop()
 
+# Chiamata alla funzione principale per eseguire il programma
 crea_fattura_gui()
