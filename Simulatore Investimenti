@@ -1,3 +1,56 @@
+import os
+import subprocess
+import sys
+
+def create_virtual_env():
+    """Crea un ambiente virtuale se non esiste."""
+    if not os.path.exists('venv'):
+        print("Creazione di un ambiente virtuale...")
+        subprocess.run([sys.executable, '-m', 'venv', 'venv'])
+    else:
+        print("L'ambiente virtuale esiste già.")
+
+def activate_virtual_env():
+    """Attiva l'ambiente virtuale."""
+    if os.name == 'nt':  # Windows
+        activate_script = os.path.join('venv', 'Scripts', 'activate')
+    else:  # macOS/Linux
+        activate_script = os.path.join('venv', 'bin', 'activate')
+    
+    return activate_script
+
+def install_dependencies():
+    """Installa le dipendenze richieste."""
+    print("Installazione delle dipendenze...")
+    subprocess.run([os.path.join('venv', 'Scripts', 'python'), '-m', 'pip', 'install', 'yfinance', 'pandas', 'matplotlib'])
+
+def run_application():
+    """Esegue lo script del simulatore."""
+    print("Esecuzione del simulatore...")
+    subprocess.run([os.path.join('venv', 'Scripts', 'python'), 'simulatore_investimenti.py'])
+
+def main():
+    create_virtual_env()
+    activate_script = activate_virtual_env()
+    
+    # Attiva l'ambiente virtuale
+    print(f"Attivazione dell'ambiente virtuale. Segui le istruzioni del tuo sistema operativo:")
+    
+    if os.name == 'nt':  # Windows
+        print(f"Attiva con il comando: venv\\Scripts\\activate")
+    else:  # macOS/Linux
+        print(f"Attiva con il comando: source venv/bin/activate")
+    
+    print("Dopo aver attivato l'ambiente, esegui:")
+    print(f"python setup.py")
+    
+    install_dependencies()
+    run_application()
+
+if __name__ == '__main__':
+    main()
+
+
 import yfinance as yf
 import matplotlib.pyplot as plt
 import pandas as pd
