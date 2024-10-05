@@ -1,4 +1,4 @@
-# Progetti di Programmazione
+# Progetti 
 
 Benvenuto nel mio repository! 🎉
 
